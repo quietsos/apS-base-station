@@ -4,6 +4,7 @@
 #include <Arduino.h>
 #include "gpio.h"
 #include <LoRa.h>
+#include "ntp.h"
 
 
 void loraInit();

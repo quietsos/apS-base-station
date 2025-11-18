@@ -32,6 +32,10 @@ void receivedData() {
     Serial.println("Packet Received:");
 
     String receivedMessage = "";  // To store the received LoRa data
+    // Get current time in epoch format
+    unsigned long epochTime = getEpochTime();
+    Serial.print("Current time (epoch): ");
+    Serial.println(epochTime);
 
     // Read the available data from the LoRa packet
     while (LoRa.available()) {
@@ -51,7 +55,7 @@ void receivedData() {
     }
 
     // Add the extra field `base:1234` directly to the JSON document
-    doc["base"] = 1234;
+    doc["time"] = epochTime;
 
     // Print the deserialized JSON (for debugging)
     Serial.println("Deserialized and Updated JSON:");

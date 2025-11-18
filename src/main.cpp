@@ -3,6 +3,7 @@
 #include "gpio.h"
 #include "loraCom.h"
 #include "mqtt.h"
+#include "ntp.h"
 
 
 
@@ -15,6 +16,9 @@ void setup() {
    // Initialize MQTT
   mqtt_init();
   mqtt_connect();
+  setupNTP();  // Initialize NTP
+  
+  
 }
 
 
@@ -27,7 +31,7 @@ void loop() {
   }
   
   mqtt_loop();  // Maintain MQTT connection
-  
+
   receivedData();
 
 }
