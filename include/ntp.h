@@ -7,7 +7,7 @@
 
 // NTP setup constants
 extern const char* ntpServer;              // NTP Server (e.g., "pool.ntp.org")
-extern const long utcOffsetInSeconds;      // Time zone offset (e.g., 3600 for UTC+1)
+extern const long utcOffsetInSeconds;      // Time zone offset (UTC+6 for Bangladesh)
 
 // NTP client object
 extern WiFiUDP udp;

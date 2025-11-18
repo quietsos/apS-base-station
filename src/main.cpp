@@ -4,6 +4,7 @@
 #include "loraCom.h"
 #include "mqtt.h"
 #include "ntp.h"
+#include "wdt.h"
 
 
 
@@ -11,13 +12,14 @@
 void setup() {
   Serial.begin(115200);
   delay(1000);
+   // Initialize the watchdog with the desired timeout
+  initWatchdog(watchdogTimeout);
 
-  loraInit();
-   // Initialize MQTT
-  mqtt_init();
-  mqtt_connect();
-  setupNTP();  // Initialize NTP
-  
+  loraInit();        // Initialize LoRa
+  mqtt_init();       // Initialize MQTT
+  mqtt_connect();    // Connect to MQTT broker
+  setupNTP();        // Initialize NTP
+
   
 }
 
@@ -32,7 +34,10 @@ void loop() {
   
   mqtt_loop();  // Maintain MQTT connection
 
-  receivedData();
+  receivedData();  // read LoRa data, process, and publish to MQTT
+
+  // Kick the watchdog periodically to prevent reset
+  feedWatchdog();
 
 }
 

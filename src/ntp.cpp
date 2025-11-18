@@ -2,7 +2,7 @@
 
 // NTP server and UTC offset
 const char* ntpServer = "pool.ntp.org";      // Default NTP server
-const long utcOffsetInSeconds = 3600;        // UTC offset in seconds (e.g., 3600 for UTC+1)
+const long utcOffsetInSeconds = 6 * 3600;    // UTC offset for Bangladesh (6 hours in seconds)
 
 // NTP client object
 WiFiUDP udp;
