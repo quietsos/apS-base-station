@@ -1,5 +1,5 @@
 #include "loraCom.h"
-
+#include "mqtt.h"
 
 void loraInit() {
     
@@ -23,25 +23,56 @@ void loraInit() {
 }
 
 
-void receivedData(){
 
+
+void receivedData() {
   int packetSize = LoRa.parsePacket();
 
   if (packetSize) {
-    Serial.println("📩 Packet Received:");
+    Serial.println("Packet Received:");
 
+    String receivedMessage = "";  // To store the received LoRa data
+
+    // Read the available data from the LoRa packet
     while (LoRa.available()) {
-      Serial.print((char)LoRa.read());
+      receivedMessage += (char)LoRa.read();
     }
+    Serial.println("Received LoRa message: ");
+    Serial.println(receivedMessage);  // Print the received message
+
+    // Create a StaticJsonDocument to hold and manipulate the received message
+    StaticJsonDocument<1024> doc;  // Adjust size as per the expected message size
+    DeserializationError error = deserializeJson(doc, receivedMessage);
+
+    if (error) {
+      Serial.print("JSON Deserialization failed: ");
+      Serial.println(error.f_str());
+      return;  // If deserialization fails, exit the function
+    }
+
+    // Add the extra field `base:1234` directly to the JSON document
+    doc["base"] = 1234;
+
+    // Print the deserialized JSON (for debugging)
+    Serial.println("Deserialized and Updated JSON:");
+    serializeJsonPretty(doc, Serial);  // This will print the updated JSON with base:1234
     Serial.println();
 
+    // Serialize the updated JSON object back to a string (payload)
+    String payload;
+    serializeJson(doc, payload);  // Convert the JSON document back to a string
+
+    // Publish the data to the MQTT broker with QoS 1
+    mqtt_publish(payload);  // Ensure you have a function to publish to MQTT with QoS 1
+
+    // Print RSSI and SNR values (for debugging)
     Serial.print("RSSI: ");
     Serial.println(LoRa.packetRssi());
 
-    Serial.print("SNR : ");
+    Serial.print("SNR: ");
     Serial.println(LoRa.packetSnr());
 
     Serial.println("-----------------------------------\n");
   }
-
 }
+

@@ -2,6 +2,7 @@
 #include <LoRa.h>
 #include "gpio.h"
 #include "loraCom.h"
+#include "mqtt.h"
 
 
 
@@ -11,13 +12,24 @@ void setup() {
   delay(1000);
 
   loraInit();
+   // Initialize MQTT
+  mqtt_init();
+  mqtt_connect();
 }
 
 
 
 void loop() {
-  receivedData();
+
+  // Check if MQTT client is connected, if not, reconnect
+  if (!client.connected()) {
+    mqtt_connect();
+  }
   
+  mqtt_loop();  // Maintain MQTT connection
+  
+  receivedData();
+
 }
 
 
